@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "cs1567p2")
+set(cs1567p2_MAINTAINER "srosenth <srosenth@todo.todo>")
+set(cs1567p2_DEPRECATED "")
+set(cs1567p2_VERSION "0.0.0")
+set(cs1567p2_BUILD_DEPENDS "geometry_msgs" "sensor_msgs" "roscpp" "rospy" "std_msgs" "std_srvs" "message_generation")
+set(cs1567p2_RUN_DEPENDS "message_runtime" "geometry_msgs" "sensor_msgs" "roscpp" "rospy" "std_msgs" "std_srvs")
+set(cs1567p2_BUILDTOOL_DEPENDS "catkin")

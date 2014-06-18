@@ -1,0 +1,8 @@
+prefix=/home/PITT/bcy3/cs1567_ws/install
+
+Name: cs1567p2
+Description: Description of cs1567p2
+Version: 0.0.0
+Cflags: -I/home/PITT/bcy3/cs1567_ws/install/include
+Libs: -L/home/PITT/bcy3/cs1567_ws/install/lib 
+Requires: message_runtime geometry_msgs sensor_msgs roscpp rospy std_msgs std_srvs
