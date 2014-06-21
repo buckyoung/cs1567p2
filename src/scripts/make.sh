@@ -2,4 +2,4 @@ cd ../..;
 catkin_make;
 source devel/setup.bash;
 cd src/scripts;
-ls;
+rosrun cs1567p2 Localize.py;
