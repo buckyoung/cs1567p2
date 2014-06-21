@@ -38,9 +38,9 @@ def top_image_callback(message):
                     byte_array[3*index+1] = chr(color_mask_list[k][1])
                     byte_array[3*index+2] = chr(color_mask_list[k][2])
                 else:
-                    byte_array[3*index+0] = chr(0) #
-                    byte_array[3*index+1] = chr(0) #
-                    byte_array[3*index+2] = chr(0) #
+                    byte_array[3*index+0] = chr(255) #
+                    byte_array[3*index+1] = chr(255) #
+                    byte_array[3*index+2] = chr(255) #
     top_mask.data = "".join(byte_array) #make char[] back into uint8[] string
     kinect3pub.publish(top_mask) #publish the mask for viewing
     print "done3 top"
