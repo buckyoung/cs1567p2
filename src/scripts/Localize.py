@@ -62,6 +62,7 @@ def top_image_callback(message):
                     byte_array[3*index+2] = chr(255) #
     top_mask.data = "".join(byte_array) #make char[] back into uint8[] string
     kinect1pub.publish(top_mask) #publish the mask for viewing
+    print "\a" #DEBUG (sound the alarm)
     print "Top, Pic 1 Published!"
         
 def mid_image_callback(message):
@@ -112,6 +113,7 @@ def mid_image_callback(message):
                     byte_array[3*index+2] = chr(255) #
     mid_mask.data = "".join(byte_array)
     kinect2pub.publish(mid_mask)
+    print "\a" #DEBUG (sound the alarm)
     print "Bottom, Pic 2 Published!"
 
 
