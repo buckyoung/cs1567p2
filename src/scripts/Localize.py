@@ -11,9 +11,9 @@ BLUE   = [224, 174, 139]
 ORANGE = [156, 201, 243] 
 BROWN  = [142, 179, 211]
 BLACK  = [112, 99, 97]
-NEONORANGE = [165, 251, 253]
-color_mask_list = [NEONORANGE, BLUE, RED, GREEN, BROWN]
-threshold = 26
+YELLOW = [165, 251, 253]
+color_mask_list = [YELLOW, BLUE, RED, GREEN, BROWN]
+threshold = 35
 locpub = None
 kinect1pub = None
 kinect2pub = None
@@ -76,12 +76,13 @@ def _2_image_callback(message):
         mask_array = list(message.data)
         print('Kinect 2 (bottom) Starting...')
         for index in xrange(message.height*message.width):
-            if (index < 10):
+            if (index < 10): #DEBUG PRINT FIRST 10 PIXELS! #DEBUG DEBUG DEBUG
                 print('Index, B G R:')
                 print(index)
                 print(ord(byte_array[3*index+0]))
                 print(ord(byte_array[3*index+1]))
-                print(ord(byte_array[3*index+2]))
+                print(ord(byte_array[3*index+2])) 
+            # END DEBUG
             for k in xrange(len(color_mask_list)):
                 if abs(color_mask_list[k][0] - ord(byte_array[3*index+0])) < threshold\
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
@@ -116,12 +117,6 @@ def _3_image_callback(message):
         mask_array = list(message.data)
         print('Kinect 3 (middle) Starting...')
         for index in xrange(message.height*message.width):
-            if (index < 10):
-                print('Index, B G R:')
-                print(index)
-                print(ord(byte_array[3*index+0]))
-                print(ord(byte_array[3*index+1]))
-                print(ord(byte_array[3*index+2]))
             for k in xrange(len(color_mask_list)):
                 if abs(color_mask_list[k][0] - ord(byte_array[3*index+0])) < threshold\
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
