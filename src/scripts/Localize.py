@@ -8,12 +8,14 @@ from cs1567p2.msg import *
 RED    = [148, 126, 229] # Not bad
 GREEN  = [212, 241, 219] # Bad -- walls and oranges and whites
 BLUE   = [224, 174, 139] # Not bad -- lost on k2 sometimes
-ORANGE = [156, 201, 243] 
-BROWN  = [142, 179, 211] # Not terrible -- steals some red
+#ORANGE = [156, 201, 243] 
+#BROWN  = [142, 179, 211] # Not terrible -- steals some red
 BLACK  = [112, 99, 97]
 YELLOW = [165, 251, 253] # Not bad -- NEON ORANGE POST IT!, also yellow and some orange
 WHITE  = [255, 255, 255] #Really good, except computer tops
-color_mask_list = [BLUE, RED, GREEN, BROWN]
+#Green and Orange dont play nice
+#Red and Brown dont play nice
+color_mask_list = [BLUE, RED, GREEN, YELLOW]
 threshold = 33
 locpub = None
 kinect1pub = None
