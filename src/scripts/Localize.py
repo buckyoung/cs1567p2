@@ -73,6 +73,12 @@ def mid_image_callback(message):
         mask_array = list(message.data)
         print('Kinect 2 (bottom) Starting...')
         for index in xrange(message.height*message.width):
+            if (index < 10):
+                print('Index, B G R:')
+                print(index)
+                print(ord(byte_array[3*index+0]))
+                print(ord(byte_array[3*index+1]))
+                print(ord(byte_array[3*index+2]))
             for k in xrange(len(color_mask_list)):
                 if abs(color_mask_list[k][0] - ord(byte_array[3*index+0])) < threshold\
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
