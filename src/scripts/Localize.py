@@ -17,10 +17,11 @@ threshold = 26
 locpub = None
 kinect1pub = None
 kinect2pub = None
+kinect3pub = None
 top_mask = Image()
 mid_mask = Image()
 
-def top_image_callback(message):
+def _1_image_callback(message):
     global color_mask_list
     global top_mask
     global threshold
@@ -58,7 +59,7 @@ def top_image_callback(message):
     print "\a" #DEBUG (sound the alarm)
     print "Top, Pic 1 Published!"
         
-def mid_image_callback(message):
+def _2_image_callback(message):
     global color_mask_list
     global mid_mask
     global threshold
@@ -98,8 +99,47 @@ def mid_image_callback(message):
     print "\a" #DEBUG (sound the alarm)
     print "Bottom, Pic 2 Published!"
 
+def _3_image_callback(message):
+    global color_mask_list
+    global mid_mask
+    global threshold
+    global kinect3pub
+    mid_mask = Image()
+    mid_mask.height = message.height
+    mid_mask.width = message.width
+    mid_mask.encoding = message.encoding
+    mid_mask.is_bigendian = message.is_bigendian
+    mid_mask.step = message.step
 
-def top_cloud_callback(message):
+    if message.encoding == "bgr8":
+        byte_array = list(message.data)
+        mask_array = list(message.data)
+        print('Kinect 3 (middle) Starting...')
+        for index in xrange(message.height*message.width):
+            if (index < 10):
+                print('Index, B G R:')
+                print(index)
+                print(ord(byte_array[3*index+0]))
+                print(ord(byte_array[3*index+1]))
+                print(ord(byte_array[3*index+2]))
+            for k in xrange(len(color_mask_list)):
+                if abs(color_mask_list[k][0] - ord(byte_array[3*index+0])) < threshold\
+                        and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
+                        and abs(color_mask_list[k][2] - ord(byte_array[3*index+2])) < threshold:
+                    mask_array[3*index+0] = chr(color_mask_list[k][0])
+                    mask_array[3*index+1] = chr(color_mask_list[k][1])
+                    mask_array[3*index+2] = chr(color_mask_list[k][2])
+                elif (k==0):
+                    #only set to black on first run
+                    mask_array[3*index+0] = chr(207) #
+                    mask_array[3*index+1] = chr(207) #
+                    mask_array[3*index+2] = chr(207) #
+    mid_mask.data = "".join(mask_array)
+    kinect3pub.publish(mid_mask)
+    print "\a" #DEBUG (sound the alarm)
+    print "Middle, Pic 3 Published!"
+
+def _1_cloud_callback(message):
     try:
         #make a generator, skipping points that have no depth, on points in 
         # list of uvs (index into image [col,row]) or if empty list, get all pt
@@ -112,7 +152,18 @@ def top_cloud_callback(message):
     except StopIteration: 
         print "(Cloud 1top)"
 
-def mid_cloud_callback(message):
+def _2_cloud_callback(message):
+    try:
+        data_out = pc2.read_points(message, field_names=None, skip_nans=True, uvs=[])
+        i=0
+        iteration1 = next(data_out) #format x,y,z,rgba
+        while iteration1 != None:
+            iteration1 = next(data_out)
+            i=i+1
+    except StopIteration: 
+        print "(Cloud 2bottom)"
+
+def _3_cloud_callback(message):
     try:
         data_out = pc2.read_points(message, field_names=None, skip_nans=True, uvs=[])
         i=0
@@ -126,15 +177,19 @@ def mid_cloud_callback(message):
 def initialize():
     global kinect1pub
     global kinect2pub
+    global kinect3pub
     global locpub
     rospy.init_node("localizeTOM") #DEBUG? wtf node problems
     locpub = rospy.Publisher("/tomservo/location",LocationList) #publish your locations
     kinect1pub = rospy.Publisher("/tomservo/mask1",Image) #test your mask
     kinect2pub = rospy.Publisher("/tomservo/mask2",Image) #woah!
-    rospy.Subscriber("/kinect1/rgb/image_color", Image, top_image_callback)
-    #rospy.Subscriber("/kinect1/depth_registered/points", PointCloud2, top_cloud_callback)
-    rospy.Subscriber("/kinect2/rgb/image_color", Image, mid_image_callback)
-    #rospy.Subscriber("/kinect2/depth_registered/points", PointCloud2, mid_cloud_callback)
+    kinect3pub = rospy.Publisher("/tomservo/mask3",Image) #woah!
+    rospy.Subscriber("/kinect1/rgb/image_color", Image, _1_image_callback)
+    #rospy.Subscriber("/kinect1/depth_registered/points", PointCloud2, _1_cloud_callback)
+    rospy.Subscriber("/kinect2/rgb/image_color", Image, _2_image_callback)
+    #rospy.Subscriber("/kinect2/depth_registered/points", PointCloud2, _2_cloud_callback)
+    rospy.Subscriber("/kinect3/rgb/image_color", Image, _3_image_callback)
+    #rospy.Subscriber("/kinect3/depth_registered/points", PointCloud2, _3_cloud_callback)
     rospy.spin()
 
 if __name__ == "__main__":
