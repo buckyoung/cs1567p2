@@ -10,7 +10,7 @@ GREEN  = [212, 241, 219]
 BLUE   = [224, 174, 139]
 ORANGE = [156, 201, 243] 
 BROWN  = [142, 179, 211]
-color_mask_list = [[224,174, 139], [148, 126, 229]] #blue, red
+color_mask_list = [BLUE, RED] #blue, red
 threshold = 50
 locpub = None
 kinect1pub = None
@@ -32,13 +32,13 @@ def top_image_callback(message):
     top_mask.step = message.step
     if message.encoding == "bgr8": #this is image_color encoding
         byte_array = list(message.data) #convert unit8[] from string to chars
+        mask_array = list(message.data)
         print('Kinect 1 (top) Starting...')
         for index in xrange(message.height*message.width): #iterate through
-#
             for k in xrange(len(color_mask_list)): 
                 #iterate through color list, if the bytes match, save the color
                 #in the mask
-                if abs(color_mask_list[k][0] - ord(byte_array[3*index])) < threshold\
+                if abs(color_mask_list[k][0] - ord(byte_array[3*index+0])) < threshold\
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
                         and abs(color_mask_list[k][2] - ord(byte_array[3*index+2])) < threshold:
                     #DEBUG
@@ -47,9 +47,9 @@ def top_image_callback(message):
                     #print(ord(byte_array[3*index+1]))
                     #print(ord(byte_array[3*index+2]))
                     #ENDDEBUG
-                    byte_array[3*index+0] = chr(color_mask_list[k][0])
-                    byte_array[3*index+1] = chr(color_mask_list[k][1])
-                    byte_array[3*index+2] = chr(color_mask_list[k][2])
+                    mask_array[3*index+0] = chr(color_mask_list[k][0])
+                    mask_array[3*index+1] = chr(color_mask_list[k][1])
+                    mask_array[3*index+2] = chr(color_mask_list[k][2])
                     #DEBUG
                     #print("...and here it is the color mask list value:")
                     #print(ord(byte_array[3*index+0]))
@@ -57,10 +57,10 @@ def top_image_callback(message):
                     #print(ord(byte_array[3*index+2]))
                     #ENDDEBUG
                 else:
-                    byte_array[3*index+0] = chr(0) #
-                    byte_array[3*index+1] = chr(0) #
-                    byte_array[3*index+2] = chr(0) #
-    top_mask.data = "".join(byte_array) #make char[] back into uint8[] string
+                    mask_array[3*index+0] = chr(0) #
+                    mask_array[3*index+1] = chr(0) #
+                    mask_array[3*index+2] = chr(0) #
+    top_mask.data = "".join(mask_array) #make char[] back into uint8[] string
     kinect1pub.publish(top_mask) #publish the mask for viewing
     print "\a" #DEBUG (sound the alarm)
     print "Top, Pic 1 Published!"
@@ -79,6 +79,7 @@ def mid_image_callback(message):
 
     if message.encoding == "bgr8":
         byte_array = list(message.data)
+        mask_array = list(message.data)
         print('Kinect 2 (bottom) Starting...')
         #print(byte_array)
         for index in xrange(message.height*message.width):
@@ -89,7 +90,7 @@ def mid_image_callback(message):
                 #print(ord(byte_array[3*index+1]))
                 #print(ord(byte_array[3*index+2]))
             for k in xrange(len(color_mask_list)):
-                if abs(color_mask_list[k][0] - ord(byte_array[3*index])) < threshold\
+                if abs(color_mask_list[k][0] - ord(byte_array[3*index+0])) < threshold\
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
                         and abs(color_mask_list[k][2] - ord(byte_array[3*index+2])) < threshold:
                     #DEBUG
@@ -98,9 +99,9 @@ def mid_image_callback(message):
                     #print(ord(byte_array[3*index+1]))
                     #print(ord(byte_array[3*index+2]))
                     #ENDDEBUG
-                    byte_array[3*index+0] = chr(color_mask_list[k][0])
-                    byte_array[3*index+1] = chr(color_mask_list[k][1])
-                    byte_array[3*index+2] = chr(color_mask_list[k][2])
+                    mask_array[3*index+0] = chr(color_mask_list[k][0])
+                    mask_array[3*index+1] = chr(color_mask_list[k][1])
+                    mask_array[3*index+2] = chr(color_mask_list[k][2])
                     #DEBUG
                     #print("...and here it is the color mask list value:")
                     #print(ord(byte_array[3*index+0]))
@@ -108,10 +109,10 @@ def mid_image_callback(message):
                     #print(ord(byte_array[3*index+2]))
                     #ENDDEBUG
                 else:
-                    byte_array[3*index+0] = chr(0) #
-                    byte_array[3*index+1] = chr(0) #
-                    byte_array[3*index+2] = chr(0) #
-    mid_mask.data = "".join(byte_array)
+                    mask_array[3*index+0] = chr(0) #
+                    mask_array[3*index+1] = chr(0) #
+                    mask_array[3*index+2] = chr(0) #
+    mid_mask.data = "".join(mask_array)
     kinect2pub.publish(mid_mask)
     print "\a" #DEBUG (sound the alarm)
     print "Bottom, Pic 2 Published!"
