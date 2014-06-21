@@ -68,7 +68,7 @@ def mid_image_callback(message):
                     byte_array[3*index+1] = chr(color_mask_list[k][1])
                     byte_array[3*index+2] = chr(color_mask_list[k][2])
                 else:
-                    if(ord(byte_array[3*index+2] > 100)):
+                    if(ord(byte_array[3*index+2]) > 100):
                         print("red > 100")
                         print(byte_array[3*index])
                         print(byte_array[3*index+1])
