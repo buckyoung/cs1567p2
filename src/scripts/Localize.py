@@ -5,7 +5,7 @@ from sensor_msgs.msg import *
 from cs1567p2.msg import *
 
 color_mask_list = [[110,0,0], [102,102,150], [204, 255, 153], [128,128,230]]
-threshold = 80
+threshold = 200
 locpub = None
 kinect3pub = None
 kinect2pub = None
@@ -69,9 +69,9 @@ def mid_image_callback(message):
                     byte_array[3*index+1] = chr(color_mask_list[k][1])
                     byte_array[3*index+2] = chr(color_mask_list[k][2])
                 else:
-                    byte_array[3*index+0] = chr(0) #
-                    byte_array[3*index+1] = chr(0) #
-                    byte_array[3*index+2] = chr(0) #
+                    byte_array[3*index+0] = chr(255) #
+                    byte_array[3*index+1] = chr(255) #
+                    byte_array[3*index+2] = chr(255) #
     mid_mask.data = "".join(byte_array)
     kinect2pub.publish(mid_mask)
     print "Bottom, Pic 2 Published"
