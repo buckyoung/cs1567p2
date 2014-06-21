@@ -59,6 +59,7 @@ def mid_image_callback(message):
 
     if message.encoding == "bgr8":
         byte_array = list(message.data)
+        print(byte_array)
         for index in xrange(message.height*message.width):
             for k in xrange(len(color_mask_list)):
                 if abs(color_mask_list[k][0] - ord(byte_array[3*index])) < threshold\
@@ -68,11 +69,6 @@ def mid_image_callback(message):
                     byte_array[3*index+1] = chr(color_mask_list[k][1])
                     byte_array[3*index+2] = chr(color_mask_list[k][2])
                 else:
-                    if(ord(byte_array[3*index+2]) > 100):
-                        print("red > 100")
-                        print(byte_array[3*index])
-                        print(byte_array[3*index+1])
-                        print(byte_array[3*index+2])
                     byte_array[3*index+0] = chr(0) #
                     byte_array[3*index+1] = chr(0) #
                     byte_array[3*index+2] = chr(0) #
