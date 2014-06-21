@@ -56,9 +56,10 @@ def mid_image_callback(message):
     mid_mask.encoding = message.encoding
     mid_mask.is_bigendian = message.is_bigendian
     mid_mask.step = message.step
-    print(message.data)
+
     if message.encoding == "bgr8":
         byte_array = list(message.data)
+        print(byte_array)
         for index in xrange(message.height*message.width):
 #
             for k in xrange(len(color_mask_list)):
