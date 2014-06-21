@@ -59,7 +59,7 @@ def mid_image_callback(message):
 
     if message.encoding == "bgr8":
         byte_array = list(message.data)
-        print(byte_array)
+        #print(byte_array)
         for index in xrange(message.height*message.width):
             for k in xrange(len(color_mask_list)):
                 if abs(color_mask_list[k][0] - ord(byte_array[3*index])) < threshold\
