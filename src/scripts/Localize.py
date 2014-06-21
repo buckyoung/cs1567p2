@@ -4,11 +4,13 @@ import sensor_msgs.point_cloud2 as pc2
 from sensor_msgs.msg import *
 from cs1567p2.msg import *
 
-RED   = [148, 126, 229]
-GREEN = [212, 241, 219]
-BLUE  = [225, 174, 140]
-color_mask_list = [GREEN, RED, BLUE]
-threshold = 50
+TAPE   = [240, 243, 244]
+RED    = [148, 126, 229]
+GREEN  = [212, 241, 219]
+BLUE   = [224, 174, 139]
+ORANGE = [156, 201, 243]
+color_mask_list = [[148, 126, 299]]
+threshold = 80
 locpub = None
 kinect1pub = None
 kinect2pub = None
@@ -29,10 +31,7 @@ def top_image_callback(message):
     top_mask.step = message.step
     if message.encoding == "bgr8": #this is image_color encoding
         byte_array = list(message.data) #convert unit8[] from string to chars
-        print("Message Height:")
-        print(message.height)
-        print("Message Width:")
-        print(message.width)
+        print('Kinect 1 (top) Starting...')
         for index in xrange(message.height*message.width): #iterate through
 #
             for k in xrange(len(color_mask_list)): 
@@ -78,6 +77,7 @@ def mid_image_callback(message):
 
     if message.encoding == "bgr8":
         byte_array = list(message.data)
+        print('Kinect 2 (bottom) Starting...')
         #print(byte_array)
         for index in xrange(message.height*message.width):
             if (index < 10):
@@ -142,7 +142,7 @@ def initialize():
     global kinect1pub
     global kinect2pub
     global locpub
-    rospy.init_node("localize")
+    rospy.init_node("localizeTOM") #DEBUG? wtf node problems
     locpub = rospy.Publisher("/tomservo/location",LocationList) #publish your locations
     kinect1pub = rospy.Publisher("/tomservo/mask1",Image) #test your mask
     kinect2pub = rospy.Publisher("/tomservo/mask2",Image) #woah!
