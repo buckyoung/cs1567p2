@@ -4,16 +4,16 @@ import sensor_msgs.point_cloud2 as pc2
 from sensor_msgs.msg import *
 from cs1567p2.msg import *
 
-TAPE   = [240, 243, 244]
+#TAPE   = [240, 243, 244]
 RED    = [148, 126, 229]
-GREEN  = [212, 241, 219]
-BLUE   = [224, 174, 139]
+#GREEN  = [212, 241, 219] # Bad -- walls and oranges and whites
+BLUE   = [224, 174, 139] # Not bad -- lost on k2 sometimes
 ORANGE = [156, 201, 243] 
-BROWN  = [142, 179, 211]
-BLACK  = [112, 99, 97]
-YELLOW = [165, 251, 253]
+BROWN  = [142, 179, 211] # Not terrible -- steals some red
+#BLACK  = [112, 99, 97]
+YELLOW = [165, 251, 253] # NEON ORANGE POST IT!, also yellow and some orange -- great!
 WHITE  = [255, 255, 255]
-color_mask_list = [YELLOW, BLUE, RED, BROWN, WHITE]
+color_mask_list = [YELLOW, BLUE, RED, BROWN, ORANGE]
 threshold = 33
 locpub = None
 kinect1pub = None
