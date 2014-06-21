@@ -7,7 +7,7 @@ from cs1567p2.msg import *
 RED   = [[145,125,230]]
 GREEN = [[]]
 color_mask_list = [[145,125,230]]
-threshold = 30
+threshold = 50
 locpub = None
 kinect1pub = None
 kinect2pub = None
