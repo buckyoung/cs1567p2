@@ -7,7 +7,7 @@ from cs1567p2.msg import *
 color_mask_list = [[110,0,0], [102,102,150], [204, 255, 153], [128,128,250]]
 threshold = 80
 locpub = None
-kinect3pub = None
+kinect1pub = None
 kinect2pub = None
 top_mask = Image()
 mid_mask = Image()
@@ -16,7 +16,7 @@ def top_image_callback(message):
     global color_mask_list
     global top_mask
     global threshold
-    global kinect3pub
+    global kinect1pub
     #make a new image if you want to view your mask
     top_mask = Image()
     top_mask.height = message.height
@@ -58,8 +58,8 @@ def top_image_callback(message):
                     byte_array[3*index+1] = chr(255) #
                     byte_array[3*index+2] = chr(255) #
     top_mask.data = "".join(byte_array) #make char[] back into uint8[] string
-    kinect3pub.publish(top_mask) #publish the mask for viewing
-    print "Top, Pic 3 Published!"
+    kinect1pub.publish(top_mask) #publish the mask for viewing
+    print "Top, Pic 1 Published!"
         
 def mid_image_callback(message):
     global color_mask_list
@@ -130,15 +130,15 @@ def mid_cloud_callback(message):
         print "(Cloud 2bottom)"
 
 def initialize():
-    global kinect3pub
+    global kinect1pub
     global kinect2pub
     global locpub
     rospy.init_node("localize")
     locpub = rospy.Publisher("/tomservo/location",LocationList) #publish your locations
-    #kinect3pub = rospy.Publisher("/tomservo/mask3",Image) #test your mask
+    kinect1pub = rospy.Publisher("/tomservo/mask1",Image) #test your mask
     kinect2pub = rospy.Publisher("/tomservo/mask2",Image) #woah!
-    #rospy.Subscriber("/kinect3/rgb/image_color", Image, top_image_callback)
-    #rospy.Subscriber("/kinect3/depth_registered/points", PointCloud2, top_cloud_callback)
+    rospy.Subscriber("/kinect1/rgb/image_color", Image, top_image_callback)
+    rospy.Subscriber("/kinect1/depth_registered/points", PointCloud2, top_cloud_callback)
     rospy.Subscriber("/kinect2/rgb/image_color", Image, mid_image_callback)
     rospy.Subscriber("/kinect2/depth_registered/points", PointCloud2, mid_cloud_callback)
     rospy.spin()
