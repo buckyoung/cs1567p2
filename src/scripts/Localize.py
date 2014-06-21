@@ -4,8 +4,8 @@ import sensor_msgs.point_cloud2 as pc2
 from sensor_msgs.msg import *
 from cs1567p2.msg import *
 
-color_mask_list = [[110,0,0], [102,102,150], [204, 255, 153], [128,128,230]]
-threshold = 200
+color_mask_list = [[110,0,0], [102,102,150], [204, 255, 153], [128,128,250]]
+threshold = 120
 locpub = None
 kinect3pub = None
 kinect2pub = None
@@ -26,6 +26,10 @@ def top_image_callback(message):
     top_mask.step = message.step
     if message.encoding == "bgr8": #this is image_color encoding
         byte_array = list(message.data) #convert unit8[] from string to chars
+        print("Message Height:")
+        print(message.height)
+        print("Message Width:")
+        print(message.width)
         for index in xrange(message.height*message.width): #iterate through
 #
             for k in xrange(len(color_mask_list)): 
@@ -43,7 +47,7 @@ def top_image_callback(message):
                     byte_array[3*index+2] = chr(255) #
     top_mask.data = "".join(byte_array) #make char[] back into uint8[] string
     kinect3pub.publish(top_mask) #publish the mask for viewing
-    print "Top, Pic 3 Published"
+    print "Top, Pic 3 Published!"
         
 def mid_image_callback(message):
     global color_mask_list
@@ -74,7 +78,7 @@ def mid_image_callback(message):
                     byte_array[3*index+2] = chr(255) #
     mid_mask.data = "".join(byte_array)
     kinect2pub.publish(mid_mask)
-    print "Bottom, Pic 2 Published"
+    print "Bottom, Pic 2 Published!"
 
 
 def top_cloud_callback(message):
@@ -88,7 +92,7 @@ def top_cloud_callback(message):
             iteration1 = next(data_out)
             i=i+1
     except StopIteration: 
-        print "3 complete top"
+        print "(Cloud 3top)"
 
 def mid_cloud_callback(message):
     try:
@@ -99,7 +103,7 @@ def mid_cloud_callback(message):
             iteration1 = next(data_out)
             i=i+1
     except StopIteration: 
-        print "2 complete bottom"
+        print "(Cloud 2bottom)"
 
 def initialize():
     global kinect3pub
