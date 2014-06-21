@@ -46,7 +46,7 @@ def top_image_callback(message):
                     mask_array[3*index+0] = chr(color_mask_list[k][0])
                     mask_array[3*index+1] = chr(color_mask_list[k][1])
                     mask_array[3*index+2] = chr(color_mask_list[k][2])
-                else if (k==0):
+                elif (k==0):
                     #only set to black on first run thru
                     mask_array[3*index+0] = chr(0) #
                     mask_array[3*index+1] = chr(0) #
@@ -80,7 +80,7 @@ def mid_image_callback(message):
                     mask_array[3*index+0] = chr(color_mask_list[k][0])
                     mask_array[3*index+1] = chr(color_mask_list[k][1])
                     mask_array[3*index+2] = chr(color_mask_list[k][2])
-                else if (k==0):
+                elif (k==0):
                     #only set to black on first run
                     mask_array[3*index+0] = chr(0) #
                     mask_array[3*index+1] = chr(0) #
