@@ -5,7 +5,7 @@ from sensor_msgs.msg import *
 from cs1567p2.msg import *
 
 color_mask_list = [[110,0,0], [102,102,150], [204, 255, 153], [128,128,250]]
-threshold = 80
+threshold = 120
 locpub = None
 kinect1pub = None
 kinect2pub = None
@@ -116,7 +116,7 @@ def top_cloud_callback(message):
             iteration1 = next(data_out)
             i=i+1
     except StopIteration: 
-        print "(Cloud 3top)"
+        print "(Cloud 1top)"
 
 def mid_cloud_callback(message):
     try:
