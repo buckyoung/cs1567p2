@@ -10,7 +10,7 @@ GREEN  = [212, 241, 219]
 BLUE   = [224, 174, 139]
 ORANGE = [156, 201, 243] 
 BROWN  = [142, 179, 211]
-color_mask_list = [BLUE, RED] #blue, red
+color_mask_list = [BLUE, RED, BROWN, GREEN]
 threshold = 50
 locpub = None
 kinect1pub = None
@@ -33,11 +33,6 @@ def top_image_callback(message):
     if message.encoding == "bgr8": #this is image_color encoding
         byte_array = list(message.data) #convert unit8[] from string to chars
         mask_array = list(message.data)
-        #set mask to all black
-        for index in xrange(message.height*message.width): #iterate through
-            mask_array[3*index+0] = chr(0)
-            mask_array[3*index+1] = chr(0)
-            mask_array[3*index+2] = chr(0)
         print('Kinect 1 (top) Starting...')
         #save only colors
         for index in xrange(message.height*message.width): #iterate through
@@ -51,22 +46,11 @@ def top_image_callback(message):
                     mask_array[3*index+0] = chr(color_mask_list[k][0])
                     mask_array[3*index+1] = chr(color_mask_list[k][1])
                     mask_array[3*index+2] = chr(color_mask_list[k][2])
-                    #DEBUG
-                    #print("...and here it is the color mask list value:")
-                    #print(ord(byte_array[3*index+0]))
-                    #print(ord(byte_array[3*index+1]))
-                    #print(ord(byte_array[3*index+2]))
-                    #ENDDEBUG
-                #else:
-                    #The color was not saved
-                    #print("Mask array")
-                    #print(ord(mask_array[3*index+0]))
-                    #if (ord(mask_array[3*index+0]) ===)
-                    #if the current mask doesnt hold another color, color it black
-                    #otherwise if it does hold another color, then save that color
-                    #mask_array[3*index+0] = chr(0) #
-                    #mask_array[3*index+1] = chr(0) #
-                    #mask_array[3*index+2] = chr(0) #
+                else if (k==0):
+                    #only set to black on first run thru
+                    mask_array[3*index+0] = chr(0) #
+                    mask_array[3*index+1] = chr(0) #
+                    mask_array[3*index+2] = chr(0) #
     top_mask.data = "".join(mask_array) #make char[] back into uint8[] string
     kinect1pub.publish(top_mask) #publish the mask for viewing
     print "\a" #DEBUG (sound the alarm)
@@ -88,34 +72,16 @@ def mid_image_callback(message):
         byte_array = list(message.data)
         mask_array = list(message.data)
         print('Kinect 2 (bottom) Starting...')
-        #print(byte_array)
         for index in xrange(message.height*message.width):
-            #if (index < 10):
-                #print('Index, B G R:')
-                #print(index)
-                #print(ord(byte_array[3*index+0]))
-                #print(ord(byte_array[3*index+1]))
-                #print(ord(byte_array[3*index+2]))
             for k in xrange(len(color_mask_list)):
                 if abs(color_mask_list[k][0] - ord(byte_array[3*index+0])) < threshold\
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
                         and abs(color_mask_list[k][2] - ord(byte_array[3*index+2])) < threshold:
-                    #DEBUG
-                    #print("Found a good color, Here it is naturally:")
-                    #print(ord(byte_array[3*index+0]))
-                    #print(ord(byte_array[3*index+1]))
-                    #print(ord(byte_array[3*index+2]))
-                    #ENDDEBUG
                     mask_array[3*index+0] = chr(color_mask_list[k][0])
                     mask_array[3*index+1] = chr(color_mask_list[k][1])
                     mask_array[3*index+2] = chr(color_mask_list[k][2])
-                    #DEBUG
-                    #print("...and here it is the color mask list value:")
-                    #print(ord(byte_array[3*index+0]))
-                    #print(ord(byte_array[3*index+1]))
-                    #print(ord(byte_array[3*index+2]))
-                    #ENDDEBUG
-                else:
+                else if (k==0):
+                    #only set to black on first run
                     mask_array[3*index+0] = chr(0) #
                     mask_array[3*index+1] = chr(0) #
                     mask_array[3*index+2] = chr(0) #
