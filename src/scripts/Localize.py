@@ -43,7 +43,7 @@ def top_image_callback(message):
                     byte_array[3*index+2] = chr(255) #
     top_mask.data = "".join(byte_array) #make char[] back into uint8[] string
     kinect3pub.publish(top_mask) #publish the mask for viewing
-    print "done3 top"
+    print "Top, Pic 3 Published"
         
 def mid_image_callback(message):
     global color_mask_list
@@ -74,7 +74,7 @@ def mid_image_callback(message):
                     byte_array[3*index+2] = chr(0) #
     mid_mask.data = "".join(byte_array)
     kinect2pub.publish(mid_mask)
-    print "done2 bottom"
+    print "Bottom, Pic 2 Published"
 
 
 def top_cloud_callback(message):
