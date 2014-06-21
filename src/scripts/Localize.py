@@ -5,7 +5,7 @@ from sensor_msgs.msg import *
 from cs1567p2.msg import *
 
 color_mask_list = [[110,0,0], [102,102,150], [204, 255, 153], [128,128,250]]
-threshold = 150
+threshold = 140
 locpub = None
 kinect3pub = None
 kinect2pub = None
@@ -38,9 +38,21 @@ def top_image_callback(message):
                 if abs(color_mask_list[k][0] - ord(byte_array[3*index])) < threshold\
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
                         and abs(color_mask_list[k][2] - ord(byte_array[3*index+2])) < threshold:
+                    #DEBUG
+                    print("Found a good color, Here it is naturally:")
+                    print(byte_array[3*index+0])
+                    print(byte_array[3*index+1])
+                    print(byte_array[3*index+2])
+                    #ENDDEBUG
                     byte_array[3*index+0] = chr(color_mask_list[k][0])
                     byte_array[3*index+1] = chr(color_mask_list[k][1])
                     byte_array[3*index+2] = chr(color_mask_list[k][2])
+                    #DEBUG
+                    print("...and here it is the color mask list value:")
+                    print(byte_array[3*index+0])
+                    print(byte_array[3*index+1])
+                    print(byte_array[3*index+2])
+                    #ENDDEBUG
                 else:
                     byte_array[3*index+0] = chr(255) #
                     byte_array[3*index+1] = chr(255) #
@@ -69,9 +81,21 @@ def mid_image_callback(message):
                 if abs(color_mask_list[k][0] - ord(byte_array[3*index])) < threshold\
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
                         and abs(color_mask_list[k][2] - ord(byte_array[3*index+2])) < threshold:
+                    #DEBUG
+                    print("Found a good color, Here it is naturally:")
+                    print(byte_array[3*index+0])
+                    print(byte_array[3*index+1])
+                    print(byte_array[3*index+2])
+                    #ENDDEBUG
                     byte_array[3*index+0] = chr(color_mask_list[k][0])
                     byte_array[3*index+1] = chr(color_mask_list[k][1])
                     byte_array[3*index+2] = chr(color_mask_list[k][2])
+                    #DEBUG
+                    print("...and here it is the color mask list value:")
+                    print(byte_array[3*index+0])
+                    print(byte_array[3*index+1])
+                    print(byte_array[3*index+2])
+                    #ENDDEBUG
                 else:
                     byte_array[3*index+0] = chr(255) #
                     byte_array[3*index+1] = chr(255) #
