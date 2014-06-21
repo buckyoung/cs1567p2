@@ -10,7 +10,7 @@ GREEN  = [212, 241, 219]
 BLUE   = [224, 174, 139]
 ORANGE = [156, 201, 243] 
 BROWN  = [142, 179, 211]
-color_mask_list = [RED, BLUE] #red
+color_mask_list = [[224,174, 139]] #blue
 threshold = 50
 locpub = None
 kinect1pub = None
@@ -57,9 +57,9 @@ def top_image_callback(message):
                     #print(ord(byte_array[3*index+2]))
                     #ENDDEBUG
                 else:
-                    byte_array[3*index+0] = chr(255) #
-                    byte_array[3*index+1] = chr(255) #
-                    byte_array[3*index+2] = chr(255) #
+                    byte_array[3*index+0] = chr(0) #
+                    byte_array[3*index+1] = chr(0) #
+                    byte_array[3*index+2] = chr(0) #
     top_mask.data = "".join(byte_array) #make char[] back into uint8[] string
     kinect1pub.publish(top_mask) #publish the mask for viewing
     print "\a" #DEBUG (sound the alarm)
@@ -108,9 +108,9 @@ def mid_image_callback(message):
                     #print(ord(byte_array[3*index+2]))
                     #ENDDEBUG
                 else:
-                    byte_array[3*index+0] = chr(255) #
-                    byte_array[3*index+1] = chr(255) #
-                    byte_array[3*index+2] = chr(255) #
+                    byte_array[3*index+0] = chr(0) #
+                    byte_array[3*index+1] = chr(0) #
+                    byte_array[3*index+2] = chr(0) #
     mid_mask.data = "".join(byte_array)
     kinect2pub.publish(mid_mask)
     print "\a" #DEBUG (sound the alarm)
