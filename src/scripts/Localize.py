@@ -135,10 +135,10 @@ def initialize():
     global locpub
     rospy.init_node("localize")
     locpub = rospy.Publisher("/tomservo/location",LocationList) #publish your locations
-    kinect3pub = rospy.Publisher("/tomservo/mask3",Image) #test your mask
+    #kinect3pub = rospy.Publisher("/tomservo/mask3",Image) #test your mask
     kinect2pub = rospy.Publisher("/tomservo/mask2",Image) #woah!
-    rospy.Subscriber("/kinect3/rgb/image_color", Image, top_image_callback)
-    rospy.Subscriber("/kinect3/depth_registered/points", PointCloud2, top_cloud_callback)
+    #rospy.Subscriber("/kinect3/rgb/image_color", Image, top_image_callback)
+    #rospy.Subscriber("/kinect3/depth_registered/points", PointCloud2, top_cloud_callback)
     rospy.Subscriber("/kinect2/rgb/image_color", Image, mid_image_callback)
     rospy.Subscriber("/kinect2/depth_registered/points", PointCloud2, mid_cloud_callback)
     rospy.spin()
