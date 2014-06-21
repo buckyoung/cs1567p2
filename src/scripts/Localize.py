@@ -6,13 +6,13 @@ from cs1567p2.msg import *
 
 #TAPE   = [240, 243, 244]
 RED    = [148, 126, 229] # Not bad
-#GREEN  = [212, 241, 219] # Bad -- walls and oranges and whites
+GREEN  = [212, 241, 219] # Bad -- walls and oranges and whites
 BLUE   = [224, 174, 139] # Not bad -- lost on k2 sometimes
 ORANGE = [156, 201, 243] 
-#BROWN  = [142, 179, 211] # Not terrible -- steals some red
-#BLACK  = [112, 99, 97]
-#YELLOW = [165, 251, 253] # Not bad -- NEON ORANGE POST IT!, also yellow and some orange
-#WHITE  = [255, 255, 255] #Really good, except computer tops
+BROWN  = [142, 179, 211] # Not terrible -- steals some red
+BLACK  = [112, 99, 97]
+YELLOW = [165, 251, 253] # Not bad -- NEON ORANGE POST IT!, also yellow and some orange
+WHITE  = [255, 255, 255] #Really good, except computer tops
 color_mask_list = [BLUE, RED, ORANGE, GREEN]
 threshold = 33
 locpub = None
