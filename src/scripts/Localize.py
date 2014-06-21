@@ -4,9 +4,10 @@ import sensor_msgs.point_cloud2 as pc2
 from sensor_msgs.msg import *
 from cs1567p2.msg import *
 
-RED = [[145,125,230]]
+RED   = [[145,125,230]]
+GREEN = [[]]
 color_mask_list = [[145,125,230]]
-threshold = 120
+threshold = 30
 locpub = None
 kinect1pub = None
 kinect2pub = None
