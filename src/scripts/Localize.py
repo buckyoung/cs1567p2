@@ -82,19 +82,19 @@ def mid_image_callback(message):
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
                         and abs(color_mask_list[k][2] - ord(byte_array[3*index+2])) < threshold:
                     #DEBUG
-                    print("Found a good color, Here it is naturally:")
-                    print(ord(byte_array[3*index+0]))
-                    print(ord(byte_array[3*index+1]))
-                    print(ord(byte_array[3*index+2]))
+                    #print("Found a good color, Here it is naturally:")
+                    #print(ord(byte_array[3*index+0]))
+                    #print(ord(byte_array[3*index+1]))
+                    #print(ord(byte_array[3*index+2]))
                     #ENDDEBUG
                     byte_array[3*index+0] = chr(color_mask_list[k][0])
                     byte_array[3*index+1] = chr(color_mask_list[k][1])
                     byte_array[3*index+2] = chr(color_mask_list[k][2])
                     #DEBUG
-                    print("...and here it is the color mask list value:")
-                    print(ord(byte_array[3*index+0]))
-                    print(ord(byte_array[3*index+1]))
-                    print(ord(byte_array[3*index+2]))
+                    #print("...and here it is the color mask list value:")
+                    #print(ord(byte_array[3*index+0]))
+                    #print(ord(byte_array[3*index+1]))
+                    #print(ord(byte_array[3*index+2]))
                     #ENDDEBUG
                 else:
                     byte_array[3*index+0] = chr(255) #
