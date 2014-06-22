@@ -5,24 +5,70 @@ from sensor_msgs.msg import *
 from cs1567p2.msg import *
 
 #TAPE   = [240, 243, 244]
-RED    = [148, 126, 229] # Not bad
-GREEN  = [212, 241, 219] # Bad -- walls and oranges and whites
-BLUE   = [224, 174, 139] # Not bad -- lost on k2 sometimes
+#RED    = [148, 126, 229] # Not bad
+#GREEN  = [212, 241, 219] # Bad -- walls and oranges and whites
+#BLUE   = [224, 174, 139] # Not bad -- lost on k2 sometimes
 #ORANGE = [156, 201, 243] 
 #BROWN  = [142, 179, 211] # Not terrible -- steals some red
-BLACK  = [112, 99, 97]
-YELLOW = [165, 251, 253] # Not bad -- NEON ORANGE POST IT!, also yellow and some orange
-WHITE  = [255, 255, 255] #Really good, except computer tops
+#BLACK  = [112, 99, 97]
+#YELLOW = [165, 251, 253] # Not bad -- NEON ORANGE POST IT!, also yellow and some orange
+#WHITE  = [255, 255, 255] #Really good, except computer tops
 #Green and Orange dont play nice
 #Red and Brown dont play nice
-color_mask_list = [BLUE, RED, GREEN, YELLOW]
-threshold = 33
+LIZLTRED  = [89,85,225]
+#LIZDKRED  = [56,56,166] #*having problems
+LIZGREEN  = [145,195,97] #*having problems ?? IS THIS ORANGE?
+LIZLTPURP = [210,160,198]
+#LIZDKPURP = [122,83,105] #terrible - catches a lot of carpet
+LIZBLUE   = [227,186,88] #note: also picks up TARGBLUE
+#TARGETS:
+#TARGGREEN  = [95,135,102]
+#TARGYELLOW = [120, 243, 250]
+#TARGORANGE = [99,161,235]
+#TARGBLUE = [222,201,79]
+TARGPURPLE = [173,108,137]
+#TARGBROWN = [104,145,198]
+#TARGTAN   = [155,214,243]
+color_mask_list = [LIZLTRED, LIZLTPURP, LIZBLUE, TARGPURPLE, LIZGREEN]
+threshold = 30
 locpub = None
 kinect1pub = None
 kinect2pub = None
 kinect3pub = None
 top_mask = Image()
 mid_mask = Image()
+
+def print_color(message):
+    global kinect3pub
+    global top_mask
+    top_mask = Image()
+    top_mask.height = message.height
+    top_mask.width = message.width
+    top_mask.encoding = message.encoding
+    top_mask.is_bigendian = message.is_bigendian
+    top_mask.step = message.step
+    b = 0
+    g = 0
+    r = 0
+    sum = 0
+    size = 10 # size by size square
+    if message.encoding == "bgr8":
+        byte_array = list(message.data)
+        for row in range(size):
+            for index in range(message.width*row, message.width*row+size):
+                sum = sum+1
+                b = b + ord(byte_array[3*index+0])
+                g = g + ord(byte_array[3*index+1])
+                r = r + ord(byte_array[3*index+2])
+                byte_array[3*index+0] = chr(255)
+                byte_array[3*index+1] = chr(50)
+                byte_array[3*index+2] = chr(100)
+    print("Color B G R:")
+    print(b/sum)
+    print(g/sum)
+    print(r/sum)
+    top_mask.data = "".join(byte_array)
+    kinect3pub.publish(top_mask)
 
 def _1_image_callback(message):
     global color_mask_list
@@ -73,19 +119,11 @@ def _2_image_callback(message):
     mid_mask.encoding = message.encoding
     mid_mask.is_bigendian = message.is_bigendian
     mid_mask.step = message.step
-
     if message.encoding == "bgr8":
         byte_array = list(message.data)
         mask_array = list(message.data)
         print('Kinect 2 (bottom) Starting...')
         for index in xrange(message.height*message.width):
-            if (index < 10): #DEBUG PRINT FIRST 10 PIXELS! #DEBUG DEBUG DEBUG
-                print('Index, B G R:')
-                print(index)
-                print(ord(byte_array[3*index+0]))
-                print(ord(byte_array[3*index+1]))
-                print(ord(byte_array[3*index+2])) 
-            # END DEBUG
             for k in xrange(len(color_mask_list)):
                 if abs(color_mask_list[k][0] - ord(byte_array[3*index+0])) < threshold\
                         and abs(color_mask_list[k][1] - ord(byte_array[3*index+1])) < threshold\
@@ -182,12 +220,13 @@ def initialize():
     kinect1pub = rospy.Publisher("/tomservo/mask1",Image) #test your mask
     kinect2pub = rospy.Publisher("/tomservo/mask2",Image) #woah!
     kinect3pub = rospy.Publisher("/tomservo/mask3",Image) #woah!
-    rospy.Subscriber("/kinect1/rgb/image_color", Image, _1_image_callback)
+#    rospy.Subscriber("/kinect1/rgb/image_color", Image, _1_image_callback)
     #rospy.Subscriber("/kinect1/depth_registered/points", PointCloud2, _1_cloud_callback)
     rospy.Subscriber("/kinect2/rgb/image_color", Image, _2_image_callback)
     #rospy.Subscriber("/kinect2/depth_registered/points", PointCloud2, _2_cloud_callback)
     rospy.Subscriber("/kinect3/rgb/image_color", Image, _3_image_callback)
     #rospy.Subscriber("/kinect3/depth_registered/points", PointCloud2, _3_cloud_callback)
+#    rospy.Subscriber("/kinect3/rgb/image_color", Image, print_color)
     rospy.spin()
 
 if __name__ == "__main__":
