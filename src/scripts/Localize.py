@@ -39,11 +39,14 @@ kinect3pub = None
 _1_mask = Image()
 _2_mask = Image()
 _3_mask = Image()
-blob_queue_2 = deque() 
 
 class Point:
     row = -1
     col = -1
+    def __init__(self, otherpoint=None):
+        if(otherpoint != None):
+            self.row = otherpoint.row
+            self.col = otherpoint.col
 class ColorPoint:
     row = -1
     col = -1
@@ -54,7 +57,7 @@ class ColorPoint:
             self.col = otherpoint.col
             self.color = otherpoint.color
 class Blob:    
-    start = ColorPoint()
+    start = Point()
     color = [-1, -1, -1]
     min_row = -1
     max_row = -1
@@ -64,16 +67,17 @@ class Blob:
     center = Point()
     mask = Image()
     def __init__(self, start_cp, mask):
-        self.start   = start_cp
-        self.color   = start_cp.color
-        self.min_row = start_cp.row
-        self.max_row = start_cp.row
-        self.min_col = start_cp.col
-        self.max_col = start_cp.col
-        self.num_px  = 0
+        self.start.row  = start_cp.row
+        self.start.col  = start_cp.col
+        self.color      = start_cp.color
+        self.min_row    = start_cp.row
+        self.max_row    = start_cp.row
+        self.min_col    = start_cp.col
+        self.max_col    = start_cp.col
+        self.num_px     = 0
         self.center.row = start_cp.row
         self.center.col = start_cp.col
-        self.mask = mask
+        self.mask       = mask
 
 def print_color(message):
     global kinect3pub
@@ -248,58 +252,63 @@ def find_color(mask, color):
     result.color = color
     return result
     
-#accept a blob and a point
-#recursively check neighbors to fill
+#accept a blob and a start point
+#Breadth first fill it
 #return a blob
-def fill_blob(blob, cpoint):
+def fill_blob(blob, start_point):
+    q = deque()
+    q.append(start_point) #start_node is a ColorPoint
     mask_array = list(blob.mask.data)
-    #1) Check if target color
-    if not(ord(mask_array[3*(cpoint.row*blob.mask.width+cpoint.col)+0]) == blob.color[0]\
-            and ord(mask_array[3*(cpoint.row*blob.mask.width+cpoint.col)+1]) == blob.color[1]\
-            and ord(mask_array[3*(cpoint.row*blob.mask.width+cpoint.col)+2]) == blob.color[2]):
-        return blob
-    # our target color is the blob color
-    # set this to visited on our blobs mask
-    mask_array[3*(cpoint.row*blob.mask.width+cpoint.col)+0] = chr(0)
-    mask_array[3*(cpoint.row*blob.mask.width+cpoint.col)+1] = chr(0)
-    mask_array[3*(cpoint.row*blob.mask.width+cpoint.col)+2] = chr(0)
+    while(q): #while the q has items
+        # Pop an item
+        current_point = q.popleft()
+        # If it has been visited, skip this iteration
+        if(ord(mask_array[3*(current_point.row*blob.mask.width+current_point.col)+0]) == chr(0)\
+                and ord(mask_array[3*(current_point.row*blob.mask.width+current_point.col)+1]) == chr(0)\
+                and ord(mask_array[3*(current_point.row*blob.mask.width+current_point.col)+2]) == chr(0)):
+            continue
+        # Otherwise, turn the current point black
+        mask_array[3*(current_point.row*blob.mask.width+current_point.col)+0] = chr(0)
+        mask_array[3*(current_point.row*blob.mask.width+current_point.col)+1] = chr(0)
+        mask_array[3*(current_point.row*blob.mask.width+current_point.col)+2] = chr(0)
+        # Prepare neighbors
+        u = Point(current_point)
+        d = Point(current_point)
+        l = Point(current_point)
+        r = Point(current_point)
+        u.row = u.row - 1
+        d.row = d.row + 1
+        r.col = r.col + 1
+        l.col = l.col - 1
+        ur     = Point(u)
+        ur.col = ur.col + 1
+        ul     = Point(u)
+        ul.col = ul.col - 1
+        dr     = Point(d)
+        dr.col = dr.col + 1
+        dl     = Point(d)
+        dl.col = dl.col - 1
+        # Enque neighbors if not out of bounds
+        if u.row >= 0:
+            q.append(u)
+        if ur.row >= 0 and ur.col < blob.mask.width:
+            q.append(ur)
+        if r.col < blob.mask.width:
+            q.append(r)
+        if dr.row < blob.mask.height and dr.col < blob.mask.width:
+            q.append(dr)
+        if d.row < blob.mask.height:
+            q.append(d)
+        if dl.row < blob.mask.height and dl.col >= 0:
+            q.append(dl)
+        if l.col >= 0:
+            q.append(l)
+        if ul.row >= 0 and ul.col >= 0:
+            q.append(ul)
+    #save the new mask
     blob.mask.data = "".join(mask_array)
-    # init new points:
-    u = ColorPoint(cpoint)
-    d = ColorPoint(cpoint)
-    l = ColorPoint(cpoint)
-    r = ColorPoint(cpoint)
-    u.row = u.row - 1
-    d.row = d.row + 1
-    r.col = r.col + 1
-    l.col = l.col - 1
-    ur     = ColorPoint(u)
-    ur.col = ur.col + 1
-    ul     = ColorPoint(u)
-    ul.col = ul.col - 1
-    dr     = ColorPoint(d)
-    dr.col = dr.col + 1
-    dl     = ColorPoint(d)
-    dl.col = dl.col - 1
-    #ok, new points are set 
-    if u.row >= 0:
-        blob = fill_blob(blob, u)
-    if ur.row >= 0 and ur.col < blob.mask.width:
-        blob = fill_blob(blob, ur)
-    if r.col < blob.mask.width:
-        blob = fill_blob(blob, r)
-    if dr.row < blob.mask.height and dr.col < blob.mask.width:
-        blob = fill_blob(blob, dr)
-    if d.row < blob.mask.height:
-        blob = fill_blob(blob, d)
-    if dl.row < blob.mask.height and dl.col >= 0:
-        blob = fill_blob(blob, dl)
-    if l.col >= 0:
-        blob = fill_blob(blob, l)
-    if ul.row >= 0 and ul.col >= 0:
-        blob = fill_blob(blob, ul)
     return blob
-    
+
 def _1_cloud_callback(message):
     try:
         #make a generator, skipping points that have no depth, on points in 
